@@ -33,7 +33,7 @@ router.get("/:id", detailProduct);
 // Update Data Product
 // PUT /api/v1/product/:id
 // middleware owner
-router.put("/:id", adminMiddleware, updateProduct);
+router.put("/:id", protectedMiddleware, adminMiddleware, updateProduct);
 
 // Delete Data Product
 // DELETE /api/v1/product/:id

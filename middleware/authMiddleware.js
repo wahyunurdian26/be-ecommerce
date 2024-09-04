@@ -8,7 +8,13 @@ export const protectedMiddleware = asyncHandler(async (req, res, next) => {
   if (token) {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      //console.log(decoded); // Debug: Periksa hasil dekode dari token
       req.user = await User.findById(decoded.id).select("-password");
+      //console.log(req.user); // Debug: Periksa user yang ditemukan
+      if (!req.user) {
+        res.status(401);
+        throw new Error("User not found");
+      }
       next();
     } catch (error) {
       res.status(401);
@@ -21,6 +27,8 @@ export const protectedMiddleware = asyncHandler(async (req, res, next) => {
 });
 
 export const adminMiddleware = (req, res, next) => {
+  console.log(req.user); // Debug
+
   if (req.user && req.user.role === "owner") {
     next(); // Jika user adalah owner, lanjutkan ke middleware atau controller berikutnya
   } else {
